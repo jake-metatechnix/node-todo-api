@@ -50,9 +50,27 @@ app.get('/todos/:id', (req, res) => {
       return res.status(404).send();
     }
     // if todo, then send back
-    res.status(200).send({todo})
+    res.status(200).send({todo});
     // error - send back 400 and no body
   }).catch((e) => res.status(400).send());
+});
+
+app.delete('/todos/:id', (req, res) => {
+  // get the Id
+  var id = req.params.id;
+
+  // validate the id -> not valid, return 404
+  if(!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  };
+  // remove by Id
+  Todo.findByIdAndRemove(id).then((todo) => {
+    if(!todo) {
+      return res.status(404).send();
+    };
+    res.status(200).send({todo});
+  }).catch((e) => res.status(400).send());
+
 });
 
 app.listen(port, () => {
